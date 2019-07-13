@@ -7,7 +7,8 @@
   "type": "commonjs",
   "scripts": {
     "start": "node index.js",
-    "test": "eslint **/*.js"
+    "test": "eslint **/*.js",
+    "dev": "nodemon index.js"
   },
   "engines": {
     "node": ">=8.10.0"
@@ -16,6 +17,7 @@
     "parse": "^2.5.1",
     "request": "^2.88.0",
     "request-promise": "^4.2.4",
+    "socks5-https-client": "^1.2.1",
     "telegraf": "^3.30.1"
   },
   "devDependencies": {
@@ -23,6 +25,7 @@
     "eslint-config-prettier": "^6.0.0",
     "eslint-plugin-node": "^9.1.0",
     "eslint-plugin-prettier": "^3.1.0",
+    "nodemon": "^1.19.1",
     "prettier": "^1.18.2"
   }
 }
