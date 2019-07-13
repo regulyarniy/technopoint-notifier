@@ -9,7 +9,12 @@ const Telegram = {
     BOT_TOKEN: process.env.TECHNOPOINT_BOT_TOKEN,
 };
 
+const Sentry = {
+    DSN: process.env.TECHNOPOINT_SENTRY_DSN,
+};
+
 module.exports = {
     Parse,
     Telegram,
+    Sentry,
 };
