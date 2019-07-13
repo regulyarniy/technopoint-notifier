@@ -14,8 +14,9 @@
     "node": ">=8.10.0"
   },
   "dependencies": {
+    "@google-cloud/firestore": "^2.2.4",
     "@sentry/node": "5.5.0",
-    "parse": "^2.5.1",
+    "firebase-admin": "^8.2.0",
     "request": "^2.88.0",
     "request-promise": "^4.2.4",
     "socks5-https-client": "^1.2.1",
