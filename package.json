@@ -16,6 +16,7 @@
   "dependencies": {
     "@google-cloud/firestore": "^2.2.4",
     "@sentry/node": "5.5.0",
+    "cheerio": "^1.0.0-rc.3",
     "firebase-admin": "^8.2.0",
     "request": "^2.88.0",
     "request-promise": "^4.2.4",
