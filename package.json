@@ -1,0 +1,7 @@
+{
+  "name": "technopoint-notifier",
+  "version": "0.0.1",
+  "description": "telegram bot for technopoint.ru price notify",
+  "main": "index.js",
+  "license": "MIT"
+}
