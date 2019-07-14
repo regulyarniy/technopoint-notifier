@@ -40,15 +40,19 @@ bot.hears(/^https:\/\/technopoint.ru\/product\//, async ({ from, message, reply 
             const products = userSnapshot.get(`products`);
             const found = products.find(p => p.id === productId);
             if (!found) {
-                products.push({ id: productId, url, price });
+                products.push({ id: productId, url, price, timestamp: new Date() });
                 await user.update({ products });
             } else if (found.price !== price) {
                 const index = products.indexOf(found);
                 products[index].price = price;
+                products[index].timestamp = new Date();
                 user.update({ products });
             }
         } else {
-            await user.set({ ...from, products: [{ id: productId, url, price }] });
+            await user.set({
+                ...from,
+                products: [{ id: productId, url, price, timestamp: new Date() }],
+            });
         }
         await reply(`Товар сохранен. Цена: ${price} руб.`);
     } catch (err) {
