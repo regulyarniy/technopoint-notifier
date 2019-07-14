@@ -1,9 +1,24 @@
+const Telegraf = require(`telegraf`);
 const { bot, database, SentryLogger } = require(`./initialize`);
 const getProductPriceById = require(`./getProductPriceById`);
 
 const usersCollection = database.collection(`users`);
 
-bot.start(async ({ reply }) => {
+const menu = Telegraf.Extra.markdown().markup(m =>
+    m.keyboard([`Справка❓`, `Показать список📝`, `🔴Очистить список🔴`]).resize()
+);
+
+bot.use(async (ctx, next) => {
+    try {
+        return next(ctx).then(() => {
+            ctx.reply(`Команды:`, menu);
+        });
+    } catch (err) {
+        SentryLogger.captureException(err);
+    }
+});
+
+bot.hears([/справка/i, /\/start/i], async ({ reply }) => {
     try {
         await reply(
             // eslint-disable-next-line max-len
@@ -41,7 +56,7 @@ bot.hears(/^https:\/\/technopoint.ru\/product\//, async ({ from, message, reply 
     }
 });
 
-bot.command(`/list`, async ({ from, reply }) => {
+bot.hears(/Показать/i, async ({ from, reply }) => {
     try {
         const user = await usersCollection.doc(from.username);
         const userSnapshot = await user.get();
@@ -60,11 +75,13 @@ bot.command(`/list`, async ({ from, reply }) => {
     }
 });
 
-bot.command(`/clear`, async ({ from, reply }) => {
+bot.hears(/Очистить/i, async ({ from, reply }) => {
     try {
         const user = await usersCollection.doc(from.username);
         const userSnapshot = await user.get();
+        const products = userSnapshot.get(`products`);
         if (userSnapshot.exists) {
+            await reply(products.reduce((acc, p) => `${acc}${p.url}\n`, `Удаляю список:\n`));
             user.update({ products: [] });
             await reply(`Список товаров очищен`);
         } else {
