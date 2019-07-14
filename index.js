@@ -17,7 +17,7 @@ bot.hears([/справка/i, /\/start/i], async ({ reply }) => {
     try {
         await reply(
             // eslint-disable-next-line max-len
-            `Привет!😀  Пришли мне ссылку вида https://technopoint.ru/product/xxx/yyy на товар и я начну присылать тебе уведомления об изменении цены на него`,
+            `Привет! 😀 \nПришли мне ссылку вида https://technopoint.ru/product/xxx/yyy на товар и я начну присылать тебе уведомления об изменении цены на него`,
             menu
         );
     } catch (err) {
@@ -30,7 +30,11 @@ bot.hears(/^https:\/\/technopoint.ru\/product\//, async ({ from, message, reply,
         const productId = message.text.split(`/`)[4];
         const url = message.text.slice(0, message.entities[0].length);
         const price = await getProductPriceById(productId);
-        const user = await usersCollection.doc(chat.id);
+        if (price === -1) {
+            await reply(`Для справки отправь /start\n👺Товар не найден! Возможно неверная ссылка!`);
+            return;
+        }
+        const user = await usersCollection.doc(`${from.username}-${chat.id}`);
         const userSnapshot = await user.get();
         if (userSnapshot.exists) {
             const products = userSnapshot.get(`products`);
@@ -57,9 +61,9 @@ bot.hears(/^https:\/\/technopoint.ru\/product\//, async ({ from, message, reply,
     }
 });
 
-bot.hears(/Показать/i, async ({ reply, chat }) => {
+bot.hears(/Показать/i, async ({ from, reply, chat }) => {
     try {
-        const user = await usersCollection.doc(chat.id);
+        const user = await usersCollection.doc(`${from.username}-${chat.id}`);
         const userSnapshot = await user.get();
         if (userSnapshot.exists) {
             const products = userSnapshot.get(`products`);
@@ -77,9 +81,9 @@ bot.hears(/Показать/i, async ({ reply, chat }) => {
     }
 });
 
-bot.hears(/Очистить/i, async ({ reply, chat }) => {
+bot.hears(/Очистить/i, async ({ from, reply, chat }) => {
     try {
-        const user = await usersCollection.doc(chat.id);
+        const user = await usersCollection.doc(`${from.username}-${chat.id}`);
         const userSnapshot = await user.get();
         const products = userSnapshot.get(`products`);
         if (userSnapshot.exists) {
@@ -120,7 +124,7 @@ const updateProducts = async () => {
                         await bot.telegram.sendMessage(
                             userData.chatId,
                             // eslint-disable-next-line max-len
-                            `Для справки отправь /start\n❗️❗️❗️Цена на товар изменилась. Старая цена: ${oldPrice} Новая цена: ${newPrice} Ссылка: ${product.url}`
+                            `Для справки отправь /start\n❗️❗️❗️Цена на товар изменилась.\n Старая цена: ${oldPrice} Новая цена: ${newPrice}\n Ссылка: ${product.url}`
                         );
                     }
                     await user.update({ products });
