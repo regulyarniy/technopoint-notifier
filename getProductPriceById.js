@@ -4,7 +4,7 @@ const cheerio = require(`cheerio`);
 module.exports = async id => {
     try {
         const requestOptions = {
-            url: `https://technopoint.ru/product/${id}/`,
+            url: `https://khabarovsk.technopoint.ru/product/${id}/`,
             headers: {
                 // eslint-disable-next-line max-len
                 'User-Agent': `Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36`,
