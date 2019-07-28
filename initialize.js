@@ -3,7 +3,9 @@ const SocksAgent = require(`socks5-https-client/lib/Agent`);
 const SentryLogger = require(`@sentry/node`);
 const firebaseAdmin = require(`firebase-admin`);
 // eslint-disable-next-line node/no-unpublished-require
-const serviceAccount = require(`./firebase-keys.json`);
+const serviceAccount = require(process.env.TECHNOPOINT_IS_FIREBASE_STAGING
+    ? `./firebase-keys-staging.json`
+    : `./firebase-keys.json`);
 
 firebaseAdmin.initializeApp({
     credential: firebaseAdmin.credential.cert(serviceAccount),
@@ -15,8 +17,8 @@ SentryLogger.init({ dsn: process.env.TECHNOPOINT_SENTRY_DSN });
 
 const agent = process.env.TECHNOPOINT_USE_PROXY // used only for dev
     ? new SocksAgent({
-          socksHost: `45.13.30.140`, // https://hidemyna.me/ru/proxy-list/?type=5#list
-          socksPort: 60079,
+          socksHost: `207.188.176.38`, // https://hidemyna.me/ru/proxy-list/?type=5#list
+          socksPort: 28728,
       })
     : null;
 
