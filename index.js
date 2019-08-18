@@ -43,8 +43,7 @@ bot.hears(/^https:\/\/technopoint.ru\/product\//, async ({ from, message, reply,
         const url = message.text.slice(0, message.entities[0].length);
         const price = await getProductPriceById(productId);
         if (price === -1) {
-            await reply(`Для справки отправь /start
-            👺Товар не найден! Возможно неверная ссылка!`);
+            await reply(`Для справки отправь /start\n👺Товар не найден! Возможно неверная ссылка!`);
             return;
         }
         const user = await usersCollection.doc(`${from.username}-${chat.id}`);
@@ -68,9 +67,10 @@ bot.hears(/^https:\/\/technopoint.ru\/product\//, async ({ from, message, reply,
                 products: [{ id: productId, url, price, timestamp: new Date() }],
             });
         }
-        await reply(`Для справки отправь /start
-        Товар сохранен. Цена: ${price} руб.
-        Я пришлю сообщение если цена изменится.`);
+        await reply(
+            // eslint-disable-next-line max-len
+            `Для справки отправь /start\nТовар сохранен. Цена: ${price} руб.\nЯ пришлю сообщение если цена изменится.`
+        );
     } catch (err) {
         SentryLogger.captureException(err);
     }
@@ -89,8 +89,8 @@ bot.hears(/Показать/i, async ({ from, reply, chat }) => {
             }
         } else {
             await reply(
-                `Для справки отправь /start
-                👺Для начала пришли ссылку на товар в виде https://technopoint.ru/product/xxx/yyy`
+                // eslint-disable-next-line max-len
+                `Для справки отправь /start\n👺Для начала пришли ссылку на товар в виде https://technopoint.ru/product/xxx/yyy`
             );
         }
     } catch (err) {
@@ -109,8 +109,8 @@ bot.hears(/Очистить/i, async ({ from, reply, chat }) => {
             await reply(`Список товаров очищен`);
         } else {
             await reply(
-                `Для справки отправь /start
-                👺Для начала пришли ссылку на товар в виде https://technopoint.ru/product/xxx/yyy`
+                // eslint-disable-next-line max-len
+                `Для справки отправь /start\n👺Для начала пришли ссылку на товар в виде https://technopoint.ru/product/xxx/yyy`
             );
         }
     } catch (err) {
@@ -141,11 +141,8 @@ const updateProducts = async () => {
                         try {
                             await bot.telegram.sendMessage(
                                 userData.chatId,
-                                `Для справки отправь /start
-                             ❗️❗️❗️Цена на товар изменилась.
-                             Старая цена: ${oldPrice}
-                             Новая цена: ${newPrice}
-                             Ссылка: ${product.url}`
+                                // eslint-disable-next-line max-len
+                                `Для справки отправь /start\n❗️❗️❗️Цена на товар изменилась.\nСтарая цена: ${oldPrice}\nНовая цена: ${newPrice}\nСсылка: ${product.url}`
                             );
                         } catch (err) {
                             SentryLogger.captureException(err);
