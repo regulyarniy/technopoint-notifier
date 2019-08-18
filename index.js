@@ -9,6 +9,18 @@ const HOURS_BEFORE_PRODUCT_DATA_OUTDATED = 1;
 
 const usersCollection = database.collection(`users`);
 
+const getConfigSnapshot = () =>
+    database
+        .collection(`config`)
+        .doc(`config`)
+        .get();
+
+const updateConfigSnapshot = data =>
+    database
+        .collection(`config`)
+        .doc(`config`)
+        .update(data);
+
 const menu = Telegraf.Extra.markdown().markup(m =>
     m.keyboard([`❓Справка❓`, `📝Показать список📝`, `❌🔴❌Очистить список❌🔴❌`]).resize()
 );
@@ -144,11 +156,34 @@ const updateProducts = async () => {
     }
 };
 
+const sendModt = async () => {
+    try {
+        const configSnapshot = await getConfigSnapshot();
+        const configData = await configSnapshot.data();
+        if (configData.motd) {
+            const usersRefs = await usersCollection.listDocuments();
+            for (const user of usersRefs) {
+                const userSnapshot = await user.get();
+                const userData = await userSnapshot.data();
+                await bot.telegram.sendMessage(
+                    userData.chatId,
+                    `Важная информация:\n${configData.motd}`
+                );
+            }
+            await updateConfigSnapshot({ motd: `` });
+        }
+    } catch (err) {
+        SentryLogger.captureException(err);
+    }
+};
+
 const launch = async () => {
     try {
         await bot.launch();
         updateProducts();
+        sendModt();
         setInterval(updateProducts, UPDATE_INTERVAL_IN_MS);
+        setInterval(sendModt, UPDATE_INTERVAL_IN_MS);
     } catch (err) {
         SentryLogger.captureException(err);
         console.log(`restarting in 1 minute...`);
