@@ -42,7 +42,7 @@ bot.hears(/^https:\/\/technopoint.ru\/product\//, async ({ from, message, reply,
         const productId = message.text.split(`/`)[4];
         const url = message.text.slice(0, message.entities[0].length);
         const price = await getProductPriceById(productId);
-        if (price === -1) {
+        if (price === -1 || price === undefined) {
             await reply(`Для справки отправь /start\n👺Товар не найден! Возможно неверная ссылка!`);
             return;
         }
@@ -144,7 +144,8 @@ const updateProducts = async () => {
                             await bot.telegram.sendMessage(
                                 userData.chatId,
                                 // eslint-disable-next-line max-len
-                                `Для справки отправь /start\n❗️❗️❗️Цена на товар изменилась.\nСтарая цена: ${oldPrice}\nНовая цена: ${newPrice}\nСсылка: ${product.url}`
+                                `Для справки отправь /start\n❗️❗️❗️Цена на товар изменилась.\nСтарая цена: ${oldPrice}\nНовая цена: ${newPrice ||
+                                    `не найдена`}\nСсылка: ${product.url}`
                             );
                         }
                         await user.update({ products });
