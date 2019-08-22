@@ -17,8 +17,8 @@ SentryLogger.init({ dsn: process.env.TECHNOPOINT_SENTRY_DSN });
 
 const agent = process.env.TECHNOPOINT_USE_PROXY // used only for dev
     ? new SocksAgent({
-          socksHost: `5.135.58.124`, // https://hidemyna.me/ru/proxy-list/?type=5#list
-          socksPort: 47780,
+          socksHost: `127.0.0.1`,
+          socksPort: 9150,
       })
     : null;
 
