@@ -83,9 +83,10 @@ bot.hears(/Показать/i, async ({ from, reply, chat }) => {
         if (userSnapshot.exists) {
             const products = userSnapshot.get(`products`);
             for (const product of products) {
-                await reply(`Для справки отправь /start
-                Ссылка:${product.url}
-                Цена:${product.price}`);
+                // eslint-disable-next-line max-len
+                await reply(
+                    `Для справки отправь /start\nСсылка:${product.url}\nЦена:${product.price}`
+                );
             }
         } else {
             await reply(
@@ -138,7 +139,7 @@ const updateProducts = async () => {
                     found.timestamp = new Date();
                     try {
                         if (newPrice !== product.price) {
-                            found.price = newPrice;
+                            found.price = newPrice || 0;
 
                             await bot.telegram.sendMessage(
                                 userData.chatId,
@@ -164,7 +165,7 @@ const updateProducts = async () => {
     }
 };
 
-const sendModt = async () => {
+const sendMotd = async () => {
     try {
         const configSnapshot = await getConfigSnapshot();
         const configData = await configSnapshot.data();
@@ -189,9 +190,9 @@ const launch = async () => {
     try {
         await bot.launch();
         updateProducts();
-        sendModt();
+        sendMotd();
         setInterval(updateProducts, UPDATE_INTERVAL_IN_MS);
-        setInterval(sendModt, UPDATE_INTERVAL_IN_MS);
+        setInterval(sendMotd, UPDATE_INTERVAL_IN_MS);
     } catch (err) {
         SentryLogger.captureException(err);
         console.log(`restarting in 1 minute...`);
