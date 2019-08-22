@@ -136,25 +136,26 @@ const updateProducts = async () => {
                     const oldPrice = product.price;
                     const found = products.find(p => p.id === product.id);
                     found.timestamp = new Date();
-                    if (newPrice !== product.price) {
-                        found.price = newPrice;
-                        try {
+                    try {
+                        if (newPrice !== product.price) {
+                            found.price = newPrice;
+
                             await bot.telegram.sendMessage(
                                 userData.chatId,
                                 // eslint-disable-next-line max-len
                                 `Для справки отправь /start\n❗️❗️❗️Цена на товар изменилась.\nСтарая цена: ${oldPrice}\nНовая цена: ${newPrice}\nСсылка: ${product.url}`
                             );
-                        } catch (err) {
-                            SentryLogger.captureException(err);
-                            SentryLogger.captureMessage(
-                                // eslint-disable-next-line max-len
-                                `Error with user: ${userData.first_name} ${
-                                    userData.chatId
-                                } \n Message: ${JSON.stringify(err)}`
-                            );
                         }
+                        await user.update({ products });
+                    } catch (err) {
+                        SentryLogger.captureException(err);
+                        SentryLogger.captureMessage(
+                            // eslint-disable-next-line max-len
+                            `Error with user: ${userData.first_name} ${
+                                userData.chatId
+                            } \n Message: ${JSON.stringify(err)}`
+                        );
                     }
-                    await user.update({ products });
                 }
             }
         }
