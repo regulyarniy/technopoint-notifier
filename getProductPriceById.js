@@ -21,7 +21,7 @@ module.exports = async id => {
 
         const html = await rp(requestOptions);
         const $ = cheerio.load(html);
-        return $(`.current-price-value`).data(`price-value`);
+        return $(`.current-price-value`).data(`price-value`) || 0;
     } catch (err) {
         return -1;
     }
